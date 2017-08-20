@@ -1,0 +1,32 @@
+<template name="tr-item">
+  <view class="td">
+        {{user.nick}}
+  </view>
+      <block wx:for="{{user.days}}" wx:for-key="day" wx:for-item="item" wx:key="index">
+        <view class='td' bindtap="clk" data-day="{{index+1}}" data-come="{{item}}" data-user="{{user.nick}}">
+          <icon type="success_no_circle" size="40" wx:if="{{item==1}}" data-day="{{index+1}}" data-come="{{item}}"  data-user="{{user.nick}}"/>          
+          <icon type="warn" size="40" wx:if="{{item==2}}" data-day="{{index+1}}" data-come="{{item}}"  data-user="{{user.nick}}"/>    
+        </view>
+      </block>
+</template>
+
+
+<view class="table">
+  <view class="tr bg-w">
+    <view class="th">姓名</view>
+    <view class="th">周一</view>
+    <view class="th">周二</view>
+    <view class="th">周三</view>
+    <view class="th">周四</view>
+    <view class="th">周五</view>
+  </view>
+  <block wx:for="{{users}}" wx:for-item="user" wx:key="index">
+
+    <view class="tr bg-w" wx:if="{{index%2==1}}">
+      <template is="tr-item" data="{{user}}"></template>
+    </view>
+    <view class="tr bg-g" wx:if="{{index%2==0}}">
+      <template is="tr-item" data="{{user}}"></template>
+    </view>
+  </block>
+</view>

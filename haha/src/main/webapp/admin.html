@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <style>
+        * {
+            font-family: "微软雅黑 楷体";
+            font-size: 20px;
+        }
+
+        .nickInput {
+            border-style: none;
+        }
+    </style>
+</head>
+<body>
+<table align="center">
+    <thead>
+    <tr>
+        <td>昵称</td>
+        <td>状态</td>
+    </tr>
+    </thead>
+    <tbody id="users">
+    <tr v-for="u in users">
+        <td>
+            <input class='nickInput'
+                   v-on:click="nickClick"
+                   v-on:blur="nickBlur"
+                   v-model="u.nick"
+                   v-on:keyup.enter='nickBlur'
+                   readonly>
+        </td>
+        <td>
+            <input type="checkbox" v-model="u.valid" v-on:change="validChange">
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<script>
+    var users = new Vue({
+        el: '#users',
+        data: {users: []},
+        methods: {
+            nickClick: function () {
+                var target = $(event.target)
+                target.attr('readonly', false)
+                target.css('border-style', 'inset')
+            },
+            nickBlur: function () {
+                var target = $(event.target)
+                target.attr('readonly', true)
+                target.css('border-style', 'none')
+                var user = this.users[target.parents('tr').index()]
+                $.post('admin', {
+                    id: user['id'],
+                    key: 'nick',
+                    value: user['nick']
+                })
+            },
+            validChange: function () {
+                var target = $(event.target)
+                var user = this.users[target.parents('tr').index()]
+                $.post('admin', {
+                    id: user['id'],
+                    key: 'valid',
+                    value: user['valid'] ? 1 : 0
+                })
+            }
+        }
+    })
+    $(document).ready(function () {
+        $.getJSON("admin", function (res) {
+            users.users = res
+        })
+    })
+
+</script>
+</html>
